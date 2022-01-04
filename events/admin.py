@@ -45,7 +45,7 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = [FilledFilter, 'category', 'features', ]
     filter_horizontal = ['features', ]
     fields = ['title', 'description', 'date_start', 'participants_number', 'is_private', 'category', 'features',
-              'display_enroll_count', 'display_places_left', ]
+              'logo','display_enroll_count', 'display_places_left', ]
     inlines = [AutoInstanceInline]
 
 

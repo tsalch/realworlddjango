@@ -1,3 +1,5 @@
+from django.urls import reverse
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -41,6 +43,7 @@ class Event(models.Model):
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE, related_name='events',
                                  verbose_name=Category._meta.verbose_name)
     features = models.ManyToManyField(Feature, related_name='events', verbose_name=Feature._meta.verbose_name)
+    logo = models.ImageField(upload_to='events/events/', blank=True, null=True)
 
     condition_list = [
         ('0', lambda x: x <= FILLED_MIDDLE / 100, f'<= {FILLED_MIDDLE}%'),
@@ -50,6 +53,9 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('events:event_detail', args=[str(self.pk)])
 
     def display_enroll_count(self):
         return self.enrolls.count()
@@ -65,6 +71,15 @@ class Event(models.Model):
             if cond[1](ocu_part): return f'{rest} ({cond[2]})'
 
     display_places_left.short_description = 'Осталось мест'
+
+    @property
+    def rate(self):
+        avg_rate = self.reviews.aggregate(models.Avg('rate'))['rate__avg']
+        return round(avg_rate, 1)
+
+    @property
+    def logo_url(self):
+        return self.logo.url if self.logo else f'{settings.STATIC_URL}images/svg-icon/event.svg'
 
     class Meta:
         verbose_name_plural = 'События'
