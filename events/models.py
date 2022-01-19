@@ -35,7 +35,7 @@ class Feature(models.Model):
 
 
 class Event(models.Model):
-    title = models.CharField(max_length=200, default='', verbose_name='Название')
+    title = models.CharField(max_length=200, default='', unique=True, verbose_name='Название')
     description = models.TextField(default='', verbose_name='Описание')
     date_start = models.DateTimeField(verbose_name='Дата начала')
     participants_number = models.PositiveSmallIntegerField(verbose_name='Количество участников')
@@ -57,6 +57,12 @@ class Event(models.Model):
     def get_absolute_url(self):
         return reverse('events:event_detail', args=[str(self.pk)])
 
+    def get_update_url(self):
+        return reverse('events:event_update', args=[str(self.pk)])
+
+    def get_delete_url(self):
+        return reverse('events:event_delete', args=[str(self.pk)])
+
     def display_enroll_count(self):
         return self.enrolls.count()
 
@@ -64,6 +70,7 @@ class Event(models.Model):
 
     def display_places_left(self):
         participants_number = self.participants_number
+        if not participants_number: return f'0 <= ({FILLED_MIDDLE})%'
         enroll_count = self.display_enroll_count()
         rest = participants_number - enroll_count
         ocu_part = enroll_count / participants_number
@@ -75,6 +82,7 @@ class Event(models.Model):
     @property
     def rate(self):
         avg_rate = self.reviews.aggregate(models.Avg('rate'))['rate__avg']
+        if not avg_rate: avg_rate = 0
         return round(avg_rate, 1)
 
     @property

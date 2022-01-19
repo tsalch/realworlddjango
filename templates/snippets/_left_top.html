@@ -13,7 +13,7 @@
             <li class="vertical-menu-item">
                 <span>Главное</span>
                 <ul class="vertical-submenu">
-                    <li><a href="event_list.html">События</a></li>
+                    <li><a href="{% url 'events:event_list' %}">События</a></li>
                     <li><a href="mail.html">Подписчики</a></li>
                 </ul>
             </li>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-auto text-center me-4">
                     {% if is_auth %}
-                    <a href="#" class="btn btn-outline-primary">+ Добавить событие</a>
+                    <a href="{% url 'events:event_create' %} " class="btn btn-outline-primary">+ Добавить событие</a>
                     {% else %}
                     <a href="#" class="btn btn-outline-primary">Войти</a>
                     <a href="#" class="btn btn-outline-primary">Регистрация</a>
