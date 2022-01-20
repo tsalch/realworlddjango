@@ -49,7 +49,7 @@ def create_review(request):
 class LoginRequiredMixin:
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseForbidden('Недостаточно прав для добавления нового объекта')
+            return HttpResponseForbidden('Недостаточно прав.')
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -98,7 +98,7 @@ class EventDetailView(DetailView):
         return default_template_names
 
 
-class EventCreateView(CreateView):
+class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
     template_name = 'events/event_update.html'
     form_class = EventCreateUpdateForm
@@ -145,7 +145,7 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class EventDeleteView(DeleteView):
+class EventDeleteView(LoginRequiredMixin, DeleteView):
     model = Event
     template_name = 'events/event_update.html'
     success_url = reverse_lazy('events:event_list')
