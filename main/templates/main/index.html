@@ -1,0 +1,113 @@
+{% extends "__base.html" %}
+
+{% block title %}Real World Django{% endblock %}
+
+{% block header %}
+       {% with subj='Real World Django' main=True %}
+            {% include "snippets/_left_top.html" %}
+        {% endwith %}
+{% endblock %}
+
+{% load static %}
+
+<!-- Start TOP_BAR -->
+<div class="container-fluid bg-white py-3">
+    <div class="row align-items-center justify-content-between">
+        <div class="col-auto text-center ms-4">
+            <h4>Real World Django</h4>
+        </div>
+        <div class="col-auto text-center me-4">
+            <a href="#" class="btn btn-outline-primary">Войти</a>
+            <a href="#" class="btn btn-primary">Регистрация</a>
+        </div>
+    </div>
+</div>
+<!-- End TOP_BAR -->
+
+<!-- Start WRAPPER -->
+<div class="container-fluid">
+    <div class="row align-items-center justify-content-center"
+         style="min-height: 450px; background-image: url(assets/images/background/bg-1.jpg)">
+        <div class="col-auto">
+            <h1 class="text-white shadow-lg rounded p-4" style="font-size: 4.3rem">Выбери свое событие</h1>
+        </div>
+    </div>
+</div>
+<!-- End WRAPPER -->
+
+{% block content %}
+<!-- Start EVENTS -->
+<div class="container-fluid bg-white py-5 my-5">
+    <div class="py-5">
+        <p class="h1 text-center">Самое <span class="text-info"><u>интересное</u></span></p>
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-xxl-4 justify-content-center g-4 mt-4">
+
+            {% for event in events %}
+            <!-- Start EVENT_ITEM -->
+            <div class="col" data-test="event">
+                <div class="card mb-3 h-100 shadow">
+                    <div class="card-body">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{% static 'images/svg-icon/watch.svg' %}" alt="event" class="card-img">
+                            </div>
+                            <div class="col-md-8 ps-lg-3">
+                                <h5 class="card-title">{{ event.title }}</h5>
+                                <p class="card-text">{{ event.description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted" data-test="event_start">
+                                        {{ event.date_start|date:"j E Y"}}
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ event.get_absolute_url }}" class="btn btn-primary">Подробее</a>
+                    </div>
+                </div>
+            </div>
+            <!-- End EVENT_ITEM -->
+            {% endfor %}
+
+
+
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'events:event_list' %}" class="btn btn-outline-primary">Смотреть все</a>
+        </div>
+    </div>
+</div>
+<!-- End EVENTS -->
+
+<!-- Start REVIEWS -->
+<div class="container-fluid bg-white py-5 my-5">
+    <div class="py-5">
+        <p class="h1 text-center">Отзывы</p>
+        <div class="row row-cols-1 row-cols-lg-3 row-cols-xxl-4 justify-content-center g-4 mt-4">
+
+            {% for review in reviews %}
+            <!-- Start REVIEW_ITEM -->
+            <div class="col" data-test="review">
+                <div class="card rounded bg-light pt-4 h-100 text-center">
+                    <img src="{% static 'images/svg-icon/rating.svg' %}" class="card-img-top" alt="review"
+                         style="max-height: 5rem">
+                    <div class="card-body">
+                        <p class="card-text" data-test="review_text">
+                            {{ review.text|slice:":200" }}
+                        </p>
+                    </div>
+                    <div class="card-footer text-center fw-bold">
+                        {{ review.user.get_full_name}}
+                    </div>
+                </div>
+            </div>
+            <!-- End REVIEW_ITEM -->
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+<!-- End REVIEWS -->
+{% endblock %}
+

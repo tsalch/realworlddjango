@@ -23,8 +23,11 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+    path('', include('main.urls')),
     path('events/', include('events.urls')),
     path('api/events/', include('events.urls_api')),
+    path('accounts/', include('accounts.urls')),
+    path('allauth/accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

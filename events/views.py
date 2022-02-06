@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 from events.models import *
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -46,18 +47,6 @@ def create_review(request):
     return JsonResponse(response)
 
 
-class LoginRequiredMixin:
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden('Недостаточно прав.')
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden('Недостаточно прав.')
-        return super().post(request, *args, **kwargs)
-
-
 class EventListView(ListView):
     model = Event
     template_name = 'events/event_list.html'
@@ -65,8 +54,6 @@ class EventListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['event_number'] = self.object_list.count()
-        context['is_auth'] = self.request.user.is_authenticated
         context['category_objects'] = Category.objects.all()
         context['feature_objects'] = Feature.objects.all()
         return context
@@ -89,7 +76,6 @@ class EventDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_auth'] = self.request.user.is_authenticated
         context['enroll_form'] = EventEnrollForm(initial={'user': self.request.user, 'event': self.object})
         return context
 
@@ -106,7 +92,7 @@ class EventCreateView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_auth'] = self.request.user.is_authenticated
+        # context['is_auth'] = self.request.user.is_authenticated
         return context
 
     def form_valid(self, form):
@@ -128,7 +114,6 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_auth'] = self.request.user.is_authenticated
         enrolls = self.object.enrolls.all()
         reviews = self.object.reviews.all()
         context['reviews'] = reviews

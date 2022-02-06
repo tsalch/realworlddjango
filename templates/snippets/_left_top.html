@@ -1,11 +1,12 @@
 {% load static %}
 
+{% if not main %}
 <div class="vertical-layout">
 
     <!-- Start LEFT_MENU -->
     <div class="leftbar">
         <div class="logobar">
-            <a href="index.html" class="logo logo-large">
+            <a href="{% url 'main:index' %}" class="logo logo-large">
                 <img src="{% static 'images/svg-icon/logo.svg' %}" alt="logo" style="height: 40px">
             </a>
         </div>
@@ -20,9 +21,9 @@
             <li class="vertical-menu-item">
                 <span>Аккаунт</span>
                 <ul class="vertical-submenu">
-                    <li><a href="profile.html">Мой аккаунт</a></li>
-                    <li><a href="#">Изменить пароль</a></li>
-                    <li><a href="#">Сбросить пароль</a></li>
+                    <li><a href="{% url 'accounts:profile' %}">Мой аккаунт</a></li>
+                    <li><a href="{% url 'accounts:password_change' %}">Изменить пароль</a></li>
+                    <li><a href="{% url 'accounts:password_reset' %}">Сбросить пароль</a></li>
                 </ul>
             </li>
         </ul>
@@ -60,7 +61,9 @@
 
     <!-- Start MAIN_CONTAINER -->
     <div class="rightbar">
+   {% endif %}
 
+        {% if not sign %}
         <!-- Start TOP_BAR -->
         <div class="container-fluid bg-white py-3">
             <div class="row align-items-center justify-content-between">
@@ -68,13 +71,27 @@
                     <h4>{{ subj }}</h4>
                 </div>
                 <div class="col-auto text-center me-4">
-                    {% if is_auth %}
+                    {% if user.is_authenticated %}
                     <a href="{% url 'events:event_create' %} " class="btn btn-outline-primary">+ Добавить событие</a>
                     {% else %}
-                    <a href="#" class="btn btn-outline-primary">Войти</a>
-                    <a href="#" class="btn btn-outline-primary">Регистрация</a>
+                    <a href="{% url 'accounts:sign_in' %}" class="btn btn-outline-primary">Войти</a>
+                    <a href="{%  url 'accounts:sign_up' %}" class="btn btn-outline-primary">Регистрация</a>
                     {% endif %}
                 </div>
             </div>
         </div>
         <!-- End TOP_BAR -->
+        {% endif %}
+
+{% if main %}
+<!-- Start WRAPPER -->
+<div class="container-fluid">
+    <div class="row align-items-center justify-content-center"
+         style="min-height: 450px; background-image: url({% static 'images/background/bg-1.jpg' %})">
+        <div class="col-auto">
+            <h1 class="text-white shadow-lg rounded p-4" style="font-size: 4.3rem">Выбери свое событие</h1>
+        </div>
+    </div>
+</div>
+<!-- End WRAPPER -->
+{% endif %}

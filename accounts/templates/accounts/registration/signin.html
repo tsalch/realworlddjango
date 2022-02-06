@@ -1,0 +1,24 @@
+{% extends "__base.html" %}
+{% block title %}Войти{% endblock %}
+
+{% block header %}
+       {% with True  as sign %}
+            {% include "snippets/_left_top.html" %}
+        {% endwith %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>Войти</h3>
+            <hr>
+            <form action="." method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

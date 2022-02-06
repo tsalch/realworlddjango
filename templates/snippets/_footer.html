@@ -1,3 +1,4 @@
+{% if not main %}
 <!-- Start FOOTER -->
 <div style="height: 70px"></div>
 <div class="footerbar">
@@ -6,3 +7,10 @@
     </footer>
 </div>
 <!-- End FOOTER -->
+{% else %}
+<!-- Start FOOTER -->
+<div class="container-fluid bg-white py-5 text-center">
+    <p class="mb-0">© Pumpskill. Real World Django</p>
+</div>
+<!-- End FOOTER -->
+{% endif %}
