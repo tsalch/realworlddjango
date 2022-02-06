@@ -74,8 +74,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SITE_ID = 1
-
 ROOT_URLCONF = 'realworlddjango.urls'
 
 TEMPLATES = [
@@ -158,9 +156,6 @@ LOGIN_URL = reverse_lazy('accounts:sign_in')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
@@ -172,3 +167,8 @@ EMAIL_USE_SSL = False
 import django_heroku
 
 django_heroku.settings(locals())
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'

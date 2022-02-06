@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth import authenticate, login
 
-from allauth.account.views import LoginView
+from allauth.account.views import LoginView, SignupView
 
 from accounts.forms import (CustomUserCreationForm, ProfileUpdateForm, UserUpdateForm,
                             CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm)
@@ -26,7 +26,7 @@ class CustomSignUpView(CreateView):
         result = super().form_valid(form)
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
-        user = User.objects.get(username=username)
+        user = authenticate(self.request, username=username, password=password)
         login(self.request, user)
         return result
 
