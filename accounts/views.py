@@ -16,7 +16,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 
-class CustomSignUpView(CreateView):
+class NullUser:
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy('main:index'))
+        return super().get(request, *args, **kwargs)
+
+
+class CustomSignUpView(NullUser, CreateView):
     model = User
     template_name = 'accounts/registration/signup.html'
     form_class = CustomUserCreationForm
@@ -127,4 +134,3 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         save_child_form.save()
         messages.success(self.request, f'Данные успешно обновлены')
         return HttpResponseRedirect(self.get_success_url())
-
