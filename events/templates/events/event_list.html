@@ -15,54 +15,41 @@
                 <div class="col">
                     <div class="card shadow">
                         <div class="card-body">
-                            <form>
+                            <form action="." method="get">
                                 <div class="row row-cols-lg-auto g-3 align-items-start">
                                     <div class="col-12">
-                                        <label for="category" class="form-label">Категория:</label>
-                                        <select class="form-select" id="category">
-                                            <option selected="">....................</option>
-                                            {% for categorty in category_objects %}
-                                                <option value="{{ forloop }}">{{ categorty }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        {{ filter_form.category.label_tag }}
+                                        {{ filter_form.category }}
                                     </div>
                                     <div class="col-12">
-                                        <label for="features" class="form-label">Свойства:</label>
-                                        <select class="form-select" multiple="" id="features">
-                                            {% for feature in feature_objects %}
-                                                <option value="{{ forloop }}">{{ feature }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        {{ filter_form.features.label_tag }}
+                                        {{ filter_form.features }}
                                     </div>
                                     <div class="col-12 d-md-flex">
                                         <div class="mx-1">
-                                            <label for="id_date_start" class="form-label">Дата начала</label>
-                                            <input type="date" class="form-control" id="id_date_start">
+                                            {{ filter_form.date_start.label_tag }}
+                                            {{ filter_form.date_start }}
                                         </div>
                                         <div class="mx-1">
-                                            <label for="id_date_end" class="form-label">Дата окончания</label>
-                                            <input type="date" class="form-control" id="id_date_end">
+                                            {{ filter_form.date_end.label_tag }}
+                                            {{ filter_form.date_end }}
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-12 d-md-flex">
                                         <div class="form-check me-3">
-                                            <input class="form-check-input" type="checkbox" value="" id="is_private">
-                                            <label class="form-check-label" for="is_private">
-                                                Private
-                                            </label>
+                                            {{ filter_form.is_private }}
+                                            {{ filter_form.is_private.label_tag }}
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="is_available">
-                                            <label class="form-check-label" for="is_available">
-                                                Есть места
-                                            </label>
+                                            {{ filter_form.is_available }}
+                                            {{ filter_form.is_available.label_tag }}
                                         </div>
                                     </div>
                                     <div class="col-12 mt-3">
                                         <button type="submit" class="btn btn-primary">Фильтровать</button>
-                                        <button type="submit" class="btn btn-outline-danger">Сбросить</button>
+                                        <a href="{% url 'events:event_list' %}" class="btn btn-outline-danger">Сбросить</a>
                                     </div>
                                 </div>
                             </form>

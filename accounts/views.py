@@ -14,6 +14,7 @@ from accounts.models import Profile
 from events.models import Event, Enroll, Review
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
+from utils.transform_data import *
 
 
 class NullUser:
@@ -102,14 +103,11 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
         if 'child_form' not in context:
             context['child_form'] = self.get_child_form()
         user = self.request.user
-        context['reviews'] = user.reviews.all()
-        enrolls = []
-        records = user.enrolls.all()
-        for record in records:
-            rev = record.event.reviews.filter(user=user).first()
-            rate = rev.rate if rev else '--'
-            enrolls.append({'event': record.event, 'rate': rate})
-        context['enrolls'] = enrolls
+        reviews = user.reviews.select_related('event').all()
+        context['reviews'] = reviews
+        dict_rev = dict_data(reviews, 'event_id')
+        records = user.enrolls.select_related('event').all()
+        context['enrolls'] = prepare_data(records, dict_rev, 'event', '--', 'event')
         return context
 
     def post(self, request, *args, **kwargs):

@@ -22,15 +22,26 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
+# Frontend URLs
 urlpatterns += [
     path('', include('main.urls')),
     path('events/', include('events.urls')),
     path('api/events/', include('events.urls_api')),
     path('accounts/', include('accounts.urls')),
     path('allauth/accounts/', include('allauth.urls')),
+    path('mail/', include('mail.urls')),
+]
+
+# API URLs
+urlpatterns += [
+    path('api/mail/', include('mail.urls_api')),
 ]
 
 if settings.DEBUG:
     from django.conf.urls.static import static
 
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    import debug_toolbar
+
+    urlpatterns += [path('__debug__/', include(debug_toolbar.urls))]

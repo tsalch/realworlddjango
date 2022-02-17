@@ -1,5 +1,5 @@
 from django import forms
-from events.models import Event, Enroll
+from events.models import Event, Enroll, Category, Feature
 from utils.forms import update_fields_widget
 
 
@@ -44,3 +44,21 @@ class EventCreateUpdateForm(forms.ModelForm):
         if participants_number and participants_number < 5:
             raise forms.ValidationError('Количество участников должно быть от 5')
         return cleaned_data
+
+
+class EventFilterForm(forms.Form):
+    category = forms.ModelChoiceField(label='Категория', queryset=Category.objects.all(), required=False)
+    features = forms.ModelMultipleChoiceField(label='Свойства', queryset=Feature.objects.all(), required=False)
+    date_start = forms.DateTimeField(label='Дата начала',
+                                     widget=forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'}), required=False)
+    date_end = forms.DateTimeField(label='Дата окончания',
+                                   widget=forms.DateInput(format="%Y-%m-%d", attrs={'type': 'date'}), required=False)
+    is_private = forms.BooleanField(label='Приватное', required=False)
+    is_available = forms.BooleanField(label='Есть места', required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].widget.attrs.update({'class': 'form-select'})
+        self.fields['features'].widget.attrs.update({'class': 'form-select', 'multiple': True})
+        update_fields_widget(self, ('date_start', 'date_end',), 'form-control')
+        update_fields_widget(self, ('is_private', 'is_available',), 'form-check-input')

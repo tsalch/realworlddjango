@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
-from events.forms import EventEnrollForm, EventCreateUpdateForm
+from events.forms import EventEnrollForm, EventCreateUpdateForm, EventFilterForm
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -8,6 +8,8 @@ from events.models import *
 from django.urls import reverse_lazy
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Q, F
+from utils.transform_data import *
 
 
 # Create your views here.
@@ -56,10 +58,33 @@ class EventListView(ListView):
         context = super().get_context_data(**kwargs)
         context['category_objects'] = Category.objects.all()
         context['feature_objects'] = Feature.objects.all()
+        context['filter_form'] = EventFilterForm(self.request.GET)
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.prefetch_related('enrolls', 'features', 'reviews').annotate(enroll_count=Count('enrolls'))
+        form = EventFilterForm(self.request.GET)
+        if form.is_valid():
+            category = form.cleaned_data['category']
+            features = form.cleaned_data['features']
+            date_start = form.cleaned_data['date_start']
+            date_end = form.cleaned_data['date_end']
+            is_private = form.cleaned_data['is_private']
+            is_available = form.cleaned_data['is_available']
+            if category:
+                queryset = queryset.filter(category=category)
+            if features:
+                for feature in features:
+                    queryset = queryset.filter(features__in=[feature])
+            if date_start:
+                queryset = queryset.filter(Q(date_start=date_start) | Q(date_start__gt=date_start))
+            if date_end:
+                queryset = queryset.filter(Q(date_start__lt=date_end) | Q(date_end=date_end))
+            if is_private:
+                queryset = queryset.filter(is_private=is_private)
+            if is_available:
+                queryset = queryset.filter(enroll_count__lt=F('participants_number'))
         return queryset.order_by('-pk')
 
 
@@ -114,15 +139,16 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        enrolls = self.object.enrolls.all()
-        reviews = self.object.reviews.all()
+        enrolls = self.object.enrolls.select_related('user').all()
+        reviews = self.object.reviews.select_related('user').all()
         context['reviews'] = reviews
+        dict_rev = dict_data(reviews, 'user_id')
         partps = []
         for enr in enrolls:
-            rev = reviews.filter(user=enr.user).first()
-            rate = rev.rate if rev else 0
-            partps.append({'name': enr.user.get_full_name(), 'email': enr.user.email, 'rate': rate})
-        context['partps'] = partps
+            user = enr.user
+            rate = dict_rev.get(user.id, 0)
+            partps.append({'name': user.get_full_name(), 'email': user.email, 'rate': rate})
+        context['partps'] = prepare_data(enrolls, dict_rev, 'user', 0, 'user')
         return context
 
     def form_invalid(self, form):

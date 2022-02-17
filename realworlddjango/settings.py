@@ -57,14 +57,17 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'allauth',
     'allauth.account',
+    'debug_toolbar',
 
     # Project apps
     'main.apps.MainConfig',
     'events.apps.EventsConfig',
     'accounts.apps.AccountsConfig',
+    'mail.apps.MailConfig',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -172,3 +175,7 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]

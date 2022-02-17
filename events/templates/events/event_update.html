@@ -108,8 +108,8 @@
                                         {% for partp in partps %}
                                         <tr>
                                             <th data-test="enroll_counter">{{ forloop.counter }}</th>
-                                            <td data-test="enroll_user">{{ partp.name }}</td>
-                                            <td data-test="enroll_email">{{ partp.email }}</td>
+                                            <td data-test="enroll_user">{{ partp.user.get_full_name }}</td>
+                                            <td data-test="enroll_email">{{ partp.user.email }}</td>
                                             <td data-test="enroll_rate">{{ partp.rate }}</td>
                                         </tr>
                                         {% endfor %}
