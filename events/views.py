@@ -80,7 +80,7 @@ class EventListView(ListView):
             if date_start:
                 queryset = queryset.filter(Q(date_start=date_start) | Q(date_start__gt=date_start))
             if date_end:
-                queryset = queryset.filter(Q(date_start__lt=date_end) | Q(date_end=date_end))
+                queryset = queryset.filter(Q(date_start__lt=date_end) | Q(date_start=date_end))
             if is_private:
                 queryset = queryset.filter(is_private=is_private)
             if is_available:
