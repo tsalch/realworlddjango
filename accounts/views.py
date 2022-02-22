@@ -1,19 +1,16 @@
-from django.contrib.auth import views as auth_views
+from allauth.account.views import LoginView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
-from django.contrib.auth import authenticate, login
-
-from allauth.account.views import LoginView, SignupView
 
 from accounts.forms import (CustomUserCreationForm, ProfileUpdateForm, UserUpdateForm,
                             CustomAuthenticationForm, CustomPasswordResetForm, CustomSetPasswordForm)
 from accounts.models import Profile
-from events.models import Event, Enroll, Review
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseForbidden, HttpResponseRedirect
 from utils.transform_data import *
 
 
