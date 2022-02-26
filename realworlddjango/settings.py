@@ -14,6 +14,8 @@ from django.conf import settings
 import environ
 from pathlib import Path
 from django.urls import reverse_lazy
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 env = environ.Env()
 environ.Env.read_env()
@@ -31,6 +33,20 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+sentry_sdk.init(
+    dsn=env('dsn'),
+    integrations=[DjangoIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 AUTHENTICATION_BACKENDS = (
     # Необходим для входа в административную часть сайта под username для админа. Должен быть независимо от 'allauth'
